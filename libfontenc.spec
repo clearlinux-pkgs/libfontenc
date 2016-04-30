@@ -4,7 +4,7 @@
 #
 Name     : libfontenc
 Version  : 1.1.3
-Release  : 6
+Release  : 7
 URL      : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.3.tar.gz
 Source0  : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.3.tar.gz
 Summary  : The fontenc Library
