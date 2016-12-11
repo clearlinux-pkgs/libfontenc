@@ -4,7 +4,7 @@
 #
 Name     : libfontenc
 Version  : 1.1.3
-Release  : 7
+Release  : 8
 URL      : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.3.tar.gz
 Source0  : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.3.tar.gz
 Summary  : The fontenc Library
@@ -13,7 +13,6 @@ License  : MIT
 Requires: libfontenc-lib
 BuildRequires : pkgconfig(xorg-macros)
 BuildRequires : pkgconfig(xproto)
-BuildRequires : pkgconfig(zlib)
 
 %description
 libfontenc - font encoding library
@@ -24,6 +23,7 @@ Xorg mailing list:
 Summary: dev components for the libfontenc package.
 Group: Development
 Requires: libfontenc-lib
+Provides: libfontenc-devel
 
 %description dev
 dev components for the libfontenc package.
@@ -41,10 +41,15 @@ lib components for the libfontenc package.
 %setup -q -n libfontenc-1.1.3
 
 %build
+export LANG=C
 %configure --disable-static
-make V=1 %{?_smp_mflags}
+make V=1  %{?_smp_mflags}
 
 %check
+export LANG=C
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
@@ -57,9 +62,10 @@ rm -rf %{buildroot}
 %files dev
 %defattr(-,root,root,-)
 /usr/include/X11/fonts/fontenc.h
-/usr/lib64/*.so
-/usr/lib64/pkgconfig/*.pc
+/usr/lib64/libfontenc.so
+/usr/lib64/pkgconfig/fontenc.pc
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/*.so.*
+/usr/lib64/libfontenc.so.1
+/usr/lib64/libfontenc.so.1.0.0
