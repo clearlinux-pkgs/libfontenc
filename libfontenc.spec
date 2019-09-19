@@ -6,11 +6,11 @@
 #
 Name     : libfontenc
 Version  : 1.1.4
-Release  : 15
+Release  : 16
 URL      : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.4.tar.gz
 Source0  : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.4.tar.gz
-Source99 : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.4.tar.gz.sig
-Summary  : X11 font encoding library
+Source1 : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.4.tar.gz.sig
+Summary  : The fontenc Library
 Group    : Development/Tools
 License  : MIT
 Requires: libfontenc-lib = %{version}-%{release}
@@ -93,8 +93,9 @@ popd
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1557077917
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1568862473
+export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -108,14 +109,14 @@ make  %{?_smp_mflags}
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
-export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32"
-export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32"
-export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
 %configure --disable-static    --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
 make  %{?_smp_mflags}
 popd
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
@@ -124,7 +125,7 @@ cd ../build32;
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1557077917
+export SOURCE_DATE_EPOCH=1568862473
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libfontenc
 cp COPYING %{buildroot}/usr/share/package-licenses/libfontenc/COPYING
