@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xCFDF148828C642A7 (alanc@freedesktop.org)
 #
 Name     : libfontenc
-Version  : 1.1.4
-Release  : 18
-URL      : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.4.tar.gz
-Source0  : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.4.tar.gz
-Source1  : http://xorg.freedesktop.org/releases/individual/lib/libfontenc-1.1.4.tar.gz.sig
+Version  : 1.1.5
+Release  : 19
+URL      : https://www.x.org/releases/individual/lib/libfontenc-1.1.5.tar.gz
+Source0  : https://www.x.org/releases/individual/lib/libfontenc-1.1.5.tar.gz
+Source1  : https://www.x.org/releases/individual/lib/libfontenc-1.1.5.tar.gz.sig
 Summary  : The fontenc Library
 Group    : Development/Tools
 License  : MIT
@@ -84,10 +84,10 @@ license components for the libfontenc package.
 
 
 %prep
-%setup -q -n libfontenc-1.1.4
-cd %{_builddir}/libfontenc-1.1.4
+%setup -q -n libfontenc-1.1.5
+cd %{_builddir}/libfontenc-1.1.5
 pushd ..
-cp -a libfontenc-1.1.4 build32
+cp -a libfontenc-1.1.5 build32
 popd
 
 %build
@@ -95,20 +95,20 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1604887384
+export SOURCE_DATE_EPOCH=1661565067
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FCFLAGS="$FFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FFLAGS="$FFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
+export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
+export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
+export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
 %configure --disable-static
 make  %{?_smp_mflags}
 
 pushd ../build32/
-export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig:/usr/share/pkgconfig"
 export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
 export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
 export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
@@ -126,15 +126,21 @@ cd ../build32;
 make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1604887384
+export SOURCE_DATE_EPOCH=1661565067
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libfontenc
-cp %{_builddir}/libfontenc-1.1.4/COPYING %{buildroot}/usr/share/package-licenses/libfontenc/70c32f13c99ca9bb7d53d5cb35fa8243dfa30e76
+cp %{_builddir}/libfontenc-%{version}/COPYING %{buildroot}/usr/share/package-licenses/libfontenc/70c32f13c99ca9bb7d53d5cb35fa8243dfa30e76
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
 then
 pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+if [ -d %{buildroot}/usr/share/pkgconfig ]
+then
+pushd %{buildroot}/usr/share/pkgconfig
 for i in *.pc ; do ln -s $i 32$i ; done
 popd
 fi
